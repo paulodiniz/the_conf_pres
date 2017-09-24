@@ -271,181 +271,127 @@ This was around 1987
 
 ---
 
-So ok, finally we have a concise picture of the functional programming world.
+A very important consequence of functional programming that I want to talk
+about is Lazy evaluation.
 
-Why did I go though all of that? Because I think it's the coolest story ever.
-I also think it's *very* important to diferentiate programming languages that were invented from
-the ones that were discovered.
-
-So after 70 years of research, both from mathematicians and computer scientists, what do we use
-to build complex system?
-
-Do we use languages that were invented? or discovered?
-
-I'm not here to tell you that Elm is great, that will live forever and everything will be perfect.
-That's not true, for any language.
-I'm here to try to convince you to use a programming language that was discovered, and not invented.
+It means that the value that you apply your function, can be infinite
 
 ----
 
-Elm is functional.
-Elm compiles to Javascript
-Elm is based on Haskell/Miranda/OCaml/etc
-Elm has a great compiler.
-
----
-
-Picture showing model, view, update
-
-
-Events will trigger the Update function, which will generate a new state (model)
-and Elm runtime will generate a new view based on that new state
-
----
-
-Everything is a function
-
-
-View, Update?
-All functions
-
-
-(meme from yo dog, i heard you like functions, so I put more functions in your function)
-
----
-
-View?
-
-A function from `Model` Type to `Html` Type
-
----
-
-Update?
-
-A function from `Model` , `Msg` (event) to `Model`
-
-We can read this as: A new event comes in, and instead of modifying your state
-you get a complete new state.
-
----
-
-Pattern matching
-
-Our update function can pattern match on the msg type
-
-
-```
-case msg of
-    KeyDown keyCode ->
-        ( { game | bird = jump game.bird }, Cmd.none )
-
-    GeneratePipe _ ->
-        ( game, Random.generate NewPipe (Random.float 50 400) )
-
-```
+Here we can take 20 elements of the inifite list of natural numbers
 
 ----
 
-Pipe operator
-
-Many people know this operator from Elixir and F#
-
-```
-a |> f |> g
-
-```
-
-is the same thing as
-
-```
-g(f(a))
-```
+Or we can map a function over the infinite list, and only take the ones we want
 
 ---
 
-Implementation in Elm
-
-```
-(|>) : a -> (a -> b) -> b
-(|>) x f =
-  f x
-
-```
+When I'm saying that the list is infinite, it doesn't mean that the functions
+are going to be applied for every element of the list,
+it just means that the decision of the elements which will be applied is
+to the consumer.
 
 ---
 
-Want to learn Elm?
+Can we use this power to express UI events?
 
-My recomendation: build a game
-
----
-
-I did, it's a flappy bird clone
-
-(shows the video)
+How would it look like?
 
 ---
 
-Here's how simple it was
+We need two things
 
-```
-updateFlappy : Game -> Game
-updateFlappy game =
-    game
-        |> gravity
-        |> physics
-        |> upperLimit
-        |> checkPipeColision
-        |> updatePipes
-        |> updateScore
+1 - Infinite list of events
 
-```
+2 - Define functions to be applied to those events
 
-Every function here has the same type (Game -> Game),
-so I can compose them, change the order, or whatever.
-
-Why? Because endomorphisms are monoids
-
-
-```
-updateScore : Game -> Game
-updateScore game =
-    let
-        score =
-            game.pipes
-                |> List.filter (\pipe -> pipe.passed == True)
-                |> List.length
-                |> (\x -> x // 2)
-    in
-        if (game.score == score) then
-           game
-        else
-            { game | score = score }
-
-```
-
-This is the function that updates the score.
-You don't have to understand all of the syntax details, just grasp
-the overall idea.
-
-we get the pipes of the game,
-filter the ones that are passed
-get the lenght of that list
-divide it by 2, because 2 pipes passed means 1 point
-
-
-This kind of expressive power is not an accident. It's by design
+3 - Result is an infinite list of side effects
 
 ---
 
+We can express that very nicely in language like Elm
 
-So
+If we have a Signal, which can be interpreted as an infinite stream
+we can lift a function (isConsonant) to work on the Signal,
+and return another signal
+
+
+---
+
+For state handling, we can call `foldp`, which can be read as
+fold from the past.
+
+So we have our initial state zero here, a function to manipulate that
+state and return a new state, and a signal of events
+
+----
+
+Ok, to be fair, this is not necessarly true since the latest version of Elm
+0.17.
+
+
+Signals have been replaced by subscriptions, but all the anologies still hold
+
+---
+
+These are the subscriptions of a game that I wrote in Elm
+
+Here we are subscribing to 5 different event streams.
+One for the frame animation, key events, two time events and a websocket
+
+You can see those declarations as signals and functions to apply on those signals
+
+So on the signal which will emit an event every second, we are going to execute the function `AskForTopPlayers`
+
+Or on the signal with events coming every two seconds, we're going to execute the funciton GeneratePipe
+
+---
+
+In Elm's architecture, subscriptions now generate messages
+Messages are how changes are propagate throught the system
+
+Users can generate messages, like clicks, drags and submits
+Sockets generate messages, like pulls and pushes
+
+So we need to handle messages, and return a new state
+
+---
+
+Elm's update function does that,
+it takes a Message, a state (game) and returns a new state and a new message
+State Monad!
+
+---
+
+We also need a function to take the new state, and generate html from it
+
+That's the view function!
+
+
+Here we have a view function, that takes a game
+And return a div, with a list of empty attributes
+and a list of children,
+
+The only child is a text that is the string representation of the game
+
+---
+
+I've been learning Elm for a little while,
+and I always thought:
+
+What is the most reactive, user interactive thing you can do?
+A game!
+
+So I built one, in Elm
+It's a flappy bird clone, you can play it too
+It has a live score for the first three players
+
+---
 
 Summary:
 
 * Functional Programming: It's discovered
 * Are you using a programming language that was discovered or invented?
 * I invite everyone to use programming languages that were discovered
-
 
 ---

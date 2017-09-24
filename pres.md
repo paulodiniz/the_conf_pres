@@ -88,12 +88,10 @@
 
 # One problem, three equivalent solutions
 
-## Lambda Calculus
 
 ---
 
-<br>
-<br>
+# Lambda Calculus
 
 ```
 L, M, N :=   x
@@ -172,9 +170,10 @@ or false false =
 
 ```
 
-zero f x = x
-one  f x = f x
-two  f x = f ( f x )
+zero  f x = x
+one   f x = f x
+two   f x = f ( f x )
+three f x = f ( f ( f x) )
 ...
 ```
 
@@ -193,6 +192,9 @@ two  f x = f ( f x )
 
 add m n f x = m f (n f x)
 
+
+> add one two (+1) 0
+3
 ```
 ---
 
@@ -201,6 +203,10 @@ add m n f x = m f (n f x)
 ```
 
 mul m n f x = m (n f) x
+
+
+> add one (mul two two) (+1) 0
+5
 
 ```
 
@@ -255,6 +261,192 @@ mul m n f x = m (n f) x
 
 ---
 
-# 
+# Lazy evaluation
+
+## The value is infinite
+
+```haskell
+> take 20 [1..]
+
+[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+
+```
 
 ---
+
+# Mapping on inifite list
+
+```haskell
+> take 20 $ map (+1) [1..]
+
+[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
+
+```
+---
+
+# All the iterations of a function
+
+```haskell
+
+iterate f x = [x, f x, f (f x), ...]
+
+take 5 $ iterate (*3) 1
+
+[1,3,9,27,81]
+
+```
+---
+
+# Expressiveness
+
+### How to model UI like this?
+
+---
+
+# Expressiveness
+
+* Inifinite list of events
+* Define functions to be applied to those events
+* Result is an infinite list of side effects
+
+---
+
+# Elm
+
+```haskell
+lift : (a -> b) -> Signal a -> Signal b
+
+lift isConsoant Keyboard.lastPressed
+
+```
+
+---
+
+# Elm
+
+```haskell
+
+foldp : (a -> b -> b) -> b -> Signal a -> Signal b
+
+foldp (\key count -> count + 1) 0 Keyboard.lastPressed
+
+```
+
+---
+
+# Since Elm 0.17, there are no more signals
+
+Farewell Functional Reactive Programming: [http://elm-lang.org/blog/farewell-to-frp](http://elm-lang.org/blog/farewell-to-frp)
+
+---
+
+# Elm Subscriptions
+
+```haskell
+subscriptions : Game -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ AnimationFrame.diffs TimeUpdate
+        , Keyboard.downs KeyDown
+        , Time.every Time.second AskForTopPlayers
+        , Time.every (Time.second * 2) GeneratePipe
+        , Phoenix.Socket.listen model.phxSocket PhoenixMsg
+        ]
+
+```
+
+---
+
+# Elm Subscriptions
+
+```haskell, [.highlight: 6]
+subscriptions : Game -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ AnimationFrame.diffs TimeUpdate
+        , Keyboard.downs KeyDown
+        , Time.every Time.second AskForTopPlayers
+        , Time.every (Time.second * 2) GeneratePipe
+        , Phoenix.Socket.listen model.phxSocket PhoenixMsg
+        ]
+
+```
+
+---
+
+# Elm Subscriptions
+
+```haskell, [.highlight: 7]
+subscriptions : Game -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ AnimationFrame.diffs TimeUpdate
+        , Keyboard.downs KeyDown
+        , Time.every Time.second AskForTopPlayers
+        , Time.every (Time.second * 2) GeneratePipe
+        , Phoenix.Socket.listen model.phxSocket PhoenixMsg
+        ]
+
+```
+
+---
+
+# Elm
+
+- Subscriptions generate messages
+- User can generate messages (click button)
+- State transformation through messages
+
+---
+
+# Elm 
+
+````haskell
+update : Msg -> Game -> ( Game, Cmd Msg )
+update msg game =
+    case game.state of
+        Play ->
+            case msg of
+                AskForTopPlayers _ ->
+                  ...
+                SendScore ->
+                  ...
+                KeyDown keyCode ->
+                  ...
+                GeneratePipe _ ->
+                  ...
+
+````
+
+---
+
+# Elm
+
+```haskell
+
+view : Game -> Html Msg
+view model =
+    div []
+        [ text (toString game) ]
+
+```
+
+---
+
+![autoplay loop](flappy-video.mov)
+
+---
+
+# Summary
+
+* Functional programming is invented, not discovered
+* Are you using a programming language that is invented?
+* Expressiveness by design
+
+---
+
+# Thank you
+
+### Twitter: @paulodiniz
+### Github: paulodiniz
+
