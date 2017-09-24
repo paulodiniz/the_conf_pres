@@ -1,0 +1,451 @@
+Hi.
+
+I'm Paulo. I was born here, in 1986, and what was happening in 1986?
+
+1 - The Halley comet
+2 - MIR
+3 - Top Gun
+
+And this is the TIOBE index measuring programming language popularity in 1986.
+Well, C is at the top, as expected, Ada is second, and Lisp is third.
+
+So Lisp is old. So what? Old is bad, new is better. Pff
+Turns out that things don't work like that in Computer Science.
+Most of the ideas that we use today are from the 1940s
+
+But this is a consequence of a very good story
+---
+
+This is David Hilbert. He was a German mathematician, and one of the best, ever.
+
+He wanted an algorithm that, given a statement in formal logic, would determine if that statement was true or false.
+This was called "The Decision Problem", or the Entscheidungsproblem, because it sounds better in German
+But what Hilbert was depending on is actually a very logical proposition (pun intended)
+
+He was depending that every provable statement is true and that every non provable statement is false.
+Or to put in a better way, he was depending on the fact that logic is complete.
+
+He used to say that "There is no such thing as an unsolvable problem", and he believed that so much
+that the epitath on his grave is:
+
+Wir müssen wissen.
+Wir werden wissen.
+
+We must know.
+We will know.
+
+---
+
+In 1930's, Kurt Godel published a proof of his incompleteness theorem.
+
+What Godel showed is that any system powerful enough to express arithmetic is either incomplete or inconsistent
+
+How did he do that? He used a clever system that encodes proofs and statements and proofs as numbers.
+And he used that to encode the following statement
+
+"This statement is not provable"
+
+
+Ai ai ai.
+
+Is this true or false?
+
+If it's false, then it is provable and we just proved something that is false and the universe imploded
+If it's true, but now you have a statement that is true, but you cannot prove it. Which is really sad for a mathematician
+
+----
+Ok, so where do we go from here?
+
+Now you have a problem in your hands, how do you show that the Entscheidungsproblem is undecidable?
+You need a formal definition of "decidable" (or computable) before you can proof what is decidable or not.
+
+So Alonzo Church derived one using Lambda calculus showed that
+If computability is something that you can express using Lambda Calculus, then yes, the Entscheidungsproblem
+is in fact undecidable.
+
+Godel actually didn't like Church's proof and did his own
+He mentioned that Church's proof was "unsatisfactory"
+(Bender gif)
+
+
+So Godel came up with his own definition of computability
+Godel solution was called "General recursive functions of natural numbers"
+Church also showed that both definitions were equivalent, which is called the Church Thesis of Equivalence.
+
+
+Also, one briliant youg man called Alan Turing came up with his own idea
+of computability
+
+He came up with the concept of Turing machines. On his paper he showed that
+if your definition of algorithm is a turing machine then yes, the Entscheidungsproblem
+is in fact undecidable.
+
+
+And in just one year, we had three definitions of computability
+
+Alonzo Church: Lambda Calculus
+An unsolvable problem of elementary number theory
+Bulletin the American Mathematical Society, May 1935
+
+
+Kurt Godel: Recursive Functions
+Stephen Kleene, General recursive functions of natural numbers
+Bulletin the American Mathematical Society, July 1935
+
+
+Alan M Turing: Turing Machines
+On computable numbers, with an application to the Entscheidungsproblem
+Proceedings of the London Mathematical Society, received 25 May 1936
+
+
+
+This is a clear indication that this mathematics was not invented, but discovered
+
+----
+
+Lambda calculus is an amazing piece of mathematics. It's simple at it's heart
+and can be used to build complex systems
+
+It only has three constructs
+
+```
+L, M, N :=   x
+        |    (lambda x. N)
+        |    (L M)
+
+```
+
+Variables, function definitions and function application.
+
+There are no other constructs than these three that I showed you.
+So there are no booleans
+No integers
+No if
+No else
+No while
+
+How do we build a programming language like that?
+Let's start with booleans
+
+Booleans are only used to make a choice, but we can make decisions without booleans.
+Let's define two functions (true and false), they will make decisions between two things, so let's
+pass two things as parameters (x and y).
+Now true will make the first choice (x) and false will choose the second one (y)
+
+```
+true x y =
+     x
+
+false x y =
+     y
+
+```
+
+Let's define `if then else` using our booleans
+
+```
+ifte bool t e =
+     bool t e
+
+```
+
+Easy, we just take a boolean, the `then` branch and the `else` branch and it just calls the boolean function
+
+So what about the `and` function? Can we express it a la 1940s?
+
+```
+and p q =
+    p q p
+
+and true false =
+    true false true
+
+```
+
+What about or?
+
+```
+or p q =
+   p p q
+
+or true false =
+   true true false
+
+```
+
+Unfortunately we don't have time to show all the possibilities, but please try it yourself.
+Nice, this way we can also build `not` and `xor` and have all the basic blocks for any computation.
+
+-----------
+
+Oh, numbers. I almost forgot about them.
+How do we encode numbers?
+
+What if we define numbers as the following: The number of times we apply a function to an argument?
+
+```
+
+two f x = f ( f x )
+one f x = f x
+zero f x = x
+
+```
+
+So for every positive integer, I can represent it with a function.
+But wait, how the hell can I use this?
+
+```
+> two (+1) 0
+2
+
+```
+
+We have to remind ourselves that the representation of a number is not the number per se,
+Just like the same "thing" can be expressed with differnet words in differnt languages,
+we can express numbers/booleans in different ways in different programming languages
+
+---
+
+Adition?
+
+
+add m n f x = m f (n f x)
+
+---
+
+We take two numbers, (m and n), I apply f `n` times and then `m` times
+
+And that's it, we have adition, for that on, multiplication is easy
+
+```
+
+mul m n f x = m (n f) x
+
+```
+
+What?
+
+---
+
+Well, you can think this as loop. The `m` is the outer loop, and for each iteration of that loop you have an inner loop `n`
+
+--- 
+
+Ok, this is all very nice. But this is the 1940s, we had no way of runnings this language.
+Until this man came along
+
+This is John McCarthy, and he developed the first implementation of a functional language called LISP
+
+(Lisp implementation example)
+
+Fun fact, Lisp was not based on Lambda Calculus, altought it has the reserved word LAMBDA on it.
+John McCarthy used the theorical model of recursive functions on the paper from Godel and his doctoral student Kleenee
+
+
+---
+
+From them on, lots of functional programming languages appeared and disapared.
+
+Most people working on functional programming were working in universities,
+isolated from each other, again remember this is between 1960 and 1990s
+Colaboration was hard, and most researches were writing and rewriting compilers 
+
+Until a man called Paul Hudak from Yale University realized that
+all of these researches were working with more or less the same programming language
+but they could not share any code because everyone had a different compiler.
+
+So a committee was formed, and they most of the principles of the language were based on
+lambda calculus and combinatorial logics.
+One of the experts in those fields was Haskell Curry, a student from David Hilbert. So
+they decide to pay a tribute to Haskell Curry and name their language:
+
+Curry
+
+(picture of a curry)
+
+Yes, for one day the Haskell language was named Curry. But they decided to change to Haskell the next day
+
+(picture of haskell logo)
+
+This was around 1987
+
+---
+
+So ok, finally we have a concise picture of the functional programming world.
+
+Why did I go though all of that? Because I think it's the coolest story ever.
+I also think it's *very* important to diferentiate programming languages that were invented from
+the ones that were discovered.
+
+So after 70 years of research, both from mathematicians and computer scientists, what do we use
+to build complex system?
+
+Do we use languages that were invented? or discovered?
+
+I'm not here to tell you that Elm is great, that will live forever and everything will be perfect.
+That's not true, for any language.
+I'm here to try to convince you to use a programming language that was discovered, and not invented.
+
+----
+
+Elm is functional.
+Elm compiles to Javascript
+Elm is based on Haskell/Miranda/OCaml/etc
+Elm has a great compiler.
+
+---
+
+Picture showing model, view, update
+
+
+Events will trigger the Update function, which will generate a new state (model)
+and Elm runtime will generate a new view based on that new state
+
+---
+
+Everything is a function
+
+
+View, Update?
+All functions
+
+
+(meme from yo dog, i heard you like functions, so I put more functions in your function)
+
+---
+
+View?
+
+A function from `Model` Type to `Html` Type
+
+---
+
+Update?
+
+A function from `Model` , `Msg` (event) to `Model`
+
+We can read this as: A new event comes in, and instead of modifying your state
+you get a complete new state.
+
+---
+
+Pattern matching
+
+Our update function can pattern match on the msg type
+
+
+```
+case msg of
+    KeyDown keyCode ->
+        ( { game | bird = jump game.bird }, Cmd.none )
+
+    GeneratePipe _ ->
+        ( game, Random.generate NewPipe (Random.float 50 400) )
+
+```
+
+----
+
+Pipe operator
+
+Many people know this operator from Elixir and F#
+
+```
+a |> f |> g
+
+```
+
+is the same thing as
+
+```
+g(f(a))
+```
+
+---
+
+Implementation in Elm
+
+```
+(|>) : a -> (a -> b) -> b
+(|>) x f =
+  f x
+
+```
+
+---
+
+Want to learn Elm?
+
+My recomendation: build a game
+
+---
+
+I did, it's a flappy bird clone
+
+(shows the video)
+
+---
+
+Here's how simple it was
+
+```
+updateFlappy : Game -> Game
+updateFlappy game =
+    game
+        |> gravity
+        |> physics
+        |> upperLimit
+        |> checkPipeColision
+        |> updatePipes
+        |> updateScore
+
+```
+
+Every function here has the same type (Game -> Game),
+so I can compose them, change the order, or whatever.
+
+Why? Because endomorphisms are monoids
+
+
+```
+updateScore : Game -> Game
+updateScore game =
+    let
+        score =
+            game.pipes
+                |> List.filter (\pipe -> pipe.passed == True)
+                |> List.length
+                |> (\x -> x // 2)
+    in
+        if (game.score == score) then
+           game
+        else
+            { game | score = score }
+
+```
+
+This is the function that updates the score.
+You don't have to understand all of the syntax details, just grasp
+the overall idea.
+
+we get the pipes of the game,
+filter the ones that are passed
+get the lenght of that list
+divide it by 2, because 2 pipes passed means 1 point
+
+
+This kind of expressive power is not an accident. It's by design
+
+---
+
+
+So
+
+Summary:
+
+* Functional Programming: It's discovered
+* Are you using a programming language that was discovered or invented?
+* I invite everyone to use programming languages that were discovered
+
+
+---
