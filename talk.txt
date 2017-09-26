@@ -395,3 +395,13 @@ Summary:
 * I invite everyone to use programming languages that were discovered
 
 ---
+
+
+
+---
+
+Feedback:
+
+what can we expect? on the introduction
+
+---
