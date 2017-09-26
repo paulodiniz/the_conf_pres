@@ -394,6 +394,8 @@ Farewell Functional Reactive Programming: [http://elm-lang.org/blog/farewell-to-
 * Handle colision
 * Have a live scoreboard
 
+![right](flappy-original.png)
+
 ---
 
 # Elm Subscriptions
