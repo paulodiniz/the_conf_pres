@@ -254,7 +254,7 @@ mul m n f x = m (n f) x
 # Remember, this is the 1940's
 * Computers were actual people
 * No compilers
-* No programming language
+* No programming languages
 
 ---
 
