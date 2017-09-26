@@ -212,7 +212,7 @@ or false false =
 zero  f x = x
 one   f x = f x
 two   f x = f ( f x )
-three f x = f ( f ( f x) )
+three f x = f ( f ( f x ) )
 ...
 ```
 
@@ -366,6 +366,8 @@ lift : (a -> b) -> Signal a -> Signal b
 lift isConsonant Keyboard.lastPressed
 
 ```
+<br>
+![inline 100%](marble-lift.png)
 
 ---
 
@@ -378,6 +380,9 @@ foldp : (a -> b -> b) -> b -> Signal a -> Signal b
 foldp (\key count -> count + 1) 0 Keyboard.lastPressed
 
 ```
+
+<br>
+![inline 100%](marble-foldp.png)
 
 ---
 
@@ -401,7 +406,7 @@ Farewell Functional Reactive Programming: [http://elm-lang.org/blog/farewell-to-
 # Elm Subscriptions
 
 * Replacement of Signals
-* Applying functions on infinite streams
+
 * Generate messages
 
 ---
@@ -515,4 +520,5 @@ view model =
 
 ### Twitter: @paulodiniz
 ### Github: paulodiniz
+### I like beers, let's have one after! :beer:
 
